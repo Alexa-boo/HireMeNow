@@ -26,9 +26,12 @@
 
   <div id="letter"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- jsPDF with integrity -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-9F6+ZfIf9UyrA4/FyOcavOny9iKc0Yi+I31mAvVoq6JojfUePC8ndMPhBEPnwe5XbEvKGPYalUhlDshZqtq5Hw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
-    document.getElementById('resumeForm').addEventListener('submit', async function(e) {
+    window.jsPDF = window.jspdf.jsPDF;
+
+    document.getElementById('resumeForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const form = new FormData(e.target);
       const name = form.get('name');
@@ -38,7 +41,6 @@
       const education = form.get('education');
 
       // Create PDF resume
-      const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       doc.setFontSize(16);
       doc.text(name, 10, 10);
