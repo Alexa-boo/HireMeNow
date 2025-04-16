@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume & Letter Generator</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+    input, textarea, select { width: 100%; padding: 10px; margin: 10px 0; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    #letter { white-space: pre-wrap; background: #f8f8f8; padding: 10px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Resume & Recommendation Letter Generator</h1>
+
+  <form id="resumeForm">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="text" name="title" placeholder="Desired Position (e.g., Marketing Manager)" required />
+    <textarea name="skills" placeholder="Skills (comma separated)" required></textarea>
+    <textarea name="experience" placeholder="Work Experience" required></textarea>
+    <textarea name="education" placeholder="Education" required></textarea>
+
+    <button type="submit">Generate Resume & Letter</button>
+  </form>
+
+  <div id="letter"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    document.getElementById('resumeForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const name = form.get('name');
+      const title = form.get('title');
+      const skills = form.get('skills');
+      const experience = form.get('experience');
+      const education = form.get('education');
+
+      // Create PDF resume
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text(name, 10, 10);
+      doc.setFontSize(12);
+      doc.text(`Position: ${title}`, 10, 20);
+      doc.text(`Skills: ${skills}`, 10, 30);
+      doc.text(`Experience:`, 10, 40);
+      doc.text(experience, 10, 50, { maxWidth: 180 });
+      doc.text(`Education:`, 10, 100);
+      doc.text(education, 10, 110, { maxWidth: 180 });
+      doc.save(`${name.replace(/\s+/g, '_')}_resume.pdf`);
+
+      // Generate recommendation letter
+      const letter = `
+To Whom It May Concern,
+
+I am pleased to recommend ${name} for the position of ${title}. With their expertise in ${skills.split(',')[0].trim()} and a solid background in ${experience.split('.')[0]}, they have consistently demonstrated professionalism and dedication.
+
+Their educational foundation in ${education.split('.')[0]} complements their practical skills, making them a well-rounded and capable candidate.
+
+I am confident that ${name} will be a valuable asset to any team.
+
+Sincerely,
+[Your Name]
+      `;
+      document.getElementById('letter').innerHTML = <h2>Recommendation Letter</h2><p>${letter}</p>;
+    });
+  </script>
+</body>
+</html>
